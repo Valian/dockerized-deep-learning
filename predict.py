@@ -9,15 +9,29 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from keras.models import load_model as load_keras_model
 
 model_filename = 'model.h5'
+class_to_name = [
+    "Airplane",
+    "Automobile",
+    "Bird",
+    "Cat",
+    "Deer",
+    "Dog",
+    "Frog",
+    "Horse",
+    "Ship",
+    "Truck"
+]
+
 
 def get_filenames():
-    images = sys.argv[1:]
-    if not images:
+    glob_patterns = sys.argv[1:]
+    if not glob_patterns:
         for filename in glob.iglob('data/**/*.*', recursive=True):
             yield filename
     else:
-        for filename in images:
-            yield "data/{}".format(filename)
+        for pattern in glob_patterns:
+            for filename in glob.iglob('data/' + pattern, recursive=True):
+                yield filename
 
 
 def load_model():
@@ -37,7 +51,8 @@ def predict(name, model):
     X_test = np.asarray([img_arr])
 
     result = model.predict(X_test)
-    print("{}   {}".format(name, result))
+    result = np.argmax(result)
+    print("{:30}   {}".format(name, class_to_name[result]))
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ build:
 	docker build -t cifar .
 
 predict:
-	docker run -it --rm -v ${DATA}:/srv/data cifar python -W ignore predict.py $(IMAGES)
+	docker run -it --rm -v ${SRC}:/srv cifar python -W ignore predict.py $(IMAGES)
 
 clear:
 	rm model.h5 || echo "No previous model"
