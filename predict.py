@@ -26,14 +26,10 @@ class_to_name = [
 
 
 def get_filenames():
-    glob_patterns = sys.argv[1:]
-    if not glob_patterns:
-        for filename in glob.iglob('data/**/*.*', recursive=True):
+    glob_patterns = sys.argv[1:] or ['**/*.*']
+    for pattern in glob_patterns:
+        for filename in glob.iglob('data/' + pattern, recursive=True):
             yield filename
-    else:
-        for pattern in glob_patterns:
-            for filename in glob.iglob('data/' + pattern, recursive=True):
-                yield filename
 
 
 def load_model():
