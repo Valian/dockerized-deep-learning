@@ -55,12 +55,9 @@ def predict(image, model):
 
 
 if __name__ == '__main__':
-    try:
-        filenames = get_filenames()
-        keras_model = load_model()
-        for filename in filenames:
-            image = load_image(filename)
-            image_class = predict(image, keras_model)
-            print("{:30}   {}".format(filename, image_class))
-    except AttributeError:
-        pass
+    filenames = get_filenames()
+    keras_model = load_model()
+    for filename in filenames:
+        image = load_image(filename)
+        image_class = predict(image, keras_model)
+        print("{:30}   {}".format(filename, image_class))
