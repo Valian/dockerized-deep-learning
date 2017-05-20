@@ -1,12 +1,14 @@
 #!/usr/env/python
-
 import sys
 import os
 import glob
+import numpy as np
+
+from keras.models import load_model as load_keras_model
+from keras.preprocessing.image import img_to_array, load_img
 
 # disable TF debugging info
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-from keras.models import load_model as load_keras_model
 
 model_filename = 'model.h5'
 class_to_name = [
@@ -42,17 +44,14 @@ def load_model():
         exit()
 
 
-def predict(name, model):
-    import numpy as np
-    from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+def load_image(filename):
+    img_arr = img_to_array(load_img(filename))
+    return np.asarray([img_arr])
 
-    img = load_img("{}".format(name))
-    img_arr = img_to_array(img)
-    X_test = np.asarray([img_arr])
 
-    result = model.predict(X_test)
-    result = np.argmax(result)
-    print("{:30}   {}".format(name, class_to_name[result]))
+def predict(image, model):
+    result = np.argmax(model.predict(image))
+    return class_to_name[result]
 
 
 if __name__ == '__main__':
@@ -60,6 +59,8 @@ if __name__ == '__main__':
         filenames = get_filenames()
         keras_model = load_model()
         for filename in filenames:
-            predict(filename, keras_model)
+            image = load_image(filename)
+            image_class = predict(image, keras_model)
+            print("{:30}   {}".format(filename, image_class))
     except AttributeError:
         pass
